@@ -51,3 +51,18 @@ The primary goal of this project is to demonstrate the integration of IoT concep
    ```sh
    git clone https://github.com/sarfiraz/poit_final_project.git
    cd poit_final_project
+   
+2. Set up the MySQL database:
+- Create a database named poit.
+- Create a table named sensors with the following structure:
+- CREATE TABLE sensors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    hodnoty text
+  );
+  
+3. Running the Application
+- cd to project directory
+- sudo python3 zadanie.py
+- open [localhost at your bro](http://localhost/) [http://127.0.0.1:5000/]
+- you should be able to see the app running
+
