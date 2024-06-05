@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Database Record
+{% endblock  %}
+
+{% block script %}
+    <script src="static/libs/plotly-latest.min.js"></script>
+  <script type="text/javascript" charset="utf-8">
+   $(document).ready(function(){
+    var layout = {
+          title: 'Data From Database',
+          xaxis: {
+            //title: 'time',
+            title: 'x'
+            //range: [0,60]
+          },
+          yaxis: {
+            title: 'ys(t)',
+           // range: [0,1]
+          }
+        };
+    var urlParams = new URLSearchParams(window.location.search);
+    var recordID = urlParams.get('db_record_id');
+    console.log("Record ID : ", recordID);
+    
+      $.ajax({
+      type: "POST", 
+      url: "/dbdata/" + recordID,
+       success:function(data) 
+      { 
+        console.log("Retrieved Data: ", data);  
+        data = JSON.parse(data);
+        console.log("Parsed Data: ",data);    
+        n = Object.keys(data).length;
+        console.log(n);
+ 
+        
+        xl = [];
+        yGas = [];
+        yLight = [];
+        yTemp = [];
+        yRain = [];
+                
+
+        for (var i=0; i< n; i++){
+          xl.push(data[i].Count);
+          yGas.push(data[i].Gas); 
+          yLight.push(data[i].Light); 
+          yTemp.push(data[i].Temperature); 
+          yRain.push(data[i].Rain); 
+          
+          var dataHtml = '';
+          dataHtml += 
+                    '<span class="text-dark">Count:</span> ' + (data[i].Count || 'N/A') + ', ' +
+                    '<span class="text-primary">Gas:</span> ' + (data[i].Gas || 'N/A') + ', ' +
+                    '<span class="text-success">Light:</span> ' + (data[i].Light || 'N/A') + ', ' +
+                    '<span class="text-danger">Temperature:</span> ' + (data[i].Temperature || 'N/A') + ', ' +
+                    '<span class="text-warning">Rain:</span> ' + (data[i].Rain || 'N/A');
+        $('#log').append('<li class="list-group-item">' + dataHtml + '</li>');
+             
+          }
+          
+		var trace1 = {
+            x: xl,
+            y: yGas,
+            name: 'Gas'
+        };      
+        var trace2 = {
+            x: xl,
+            y: yLight,
+            name: 'Light'
+        };   
+        var trace3 = {
+            x: xl,
+            y: yTemp,
+            name: 'Temperature'
+        }; 
+        var trace4 = {
+            x: xl,
+            y: yRain,
+            name: 'Rain'
+        }; 
+
+        var traces = [trace1, trace2, trace3, trace4];
+  
+        Plotly.newPlot($('#plotdiv')[0], traces,layout);         
+      }
+    }).done(function( o ) {
+       // do something
+    });    
+   });   
+
+  </script>
+{% endblock  %}
+
+{% include 'navbar.html' %}
+
+{% block content %}
+      
+ <div id="plotdiv" class="mb-4 text-center mx-auto" style="width:700px;height:350px;"></div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <h2 class="text-center">Extracted Json record from database</h2>
+            <ul id="log" class="list-group"></ul>
+        </div>
+    </div>
+{% endblock  %}

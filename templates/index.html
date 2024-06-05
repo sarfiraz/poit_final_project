@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Home
+{% endblock  %}
+
+{% block script %}
+     <script type="text/javascript" charset="utf-8">
+        //$(document).ready(function() {
+            //namespace = '/test';
+            //var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            //socket.on('connect', function() {
+                //socket.emit('my_event', {data: 'I\'m connected!', value: 1});
+            //});
+
+            //socket.on('my_response', function(msg) {
+                //console.log(msg.data);
+                //$('#log').append('<li class="list-group-item">Received #' + msg.count + ': ' + JSON.stringify(msg.data) + '</li>');
+            //});
+
+        //});
+    </script>
+{% endblock  %}
+
+{% block content %}
+   <p class="sub-heading">This web application monitors gas, light, temperature, and rain sensors.<br>
+    To go furthur and see the values coming from sensors (text form, graph, and gauge) and manipulate with storing and reading those values to database and files click Open Button below.</p>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <img src="{{url_for('static', filename='images/mq2.jpg')}}" class="card-img-top" alt="Gas Sensor">
+                <div class="card-body">
+                    <h5 class="card-title">Gas Sensor</h5>
+                    <p class="card-text">Monitors gas levels.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <img src="{{url_for('static', filename='images/light.jpg')}}" class="card-img-top" alt="Light Sensor">
+                <div class="card-body">
+                    <h5 class="card-title">Light Sensor</h5>
+                    <p class="card-text">Monitors light intensity.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <img src="{{url_for('static', filename='images/dallas.jpg')}}" class="card-img-top" alt="Temperature Sensor">
+                <div class="card-body">
+                    <h5 class="card-title">Temp Sensor</h5>
+                    <p class="card-text">Monitors temperature.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <img src="{{url_for('static', filename='images/rain3.jpg')}}" class="card-img-top" alt="Rain Sensor">
+                <div class="card-body">
+                    <h5 class="card-title">Rain Sensor</h5>
+                    <p class="card-text">Monitors rain levels.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5">
+<!--
+        <a href="/start" class="btn btn-open">Open</a>
+-->
+          <form id="startForm" method="POST" action="/start" class="text-center">
+                    <button type="submit" class="btn btn-success">Open</button>
+          </form>
+    </div>
+{% endblock  %}

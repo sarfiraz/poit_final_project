@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+  RestApi
+{% endblock  %}
+
+{% block script %}
+     <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            namespace = '/test';
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            socket.on('connect', function() {
+                socket.emit('my_event', {data: 'I\'m connected!', value: 1});
+            });
+
+            socket.on('my_response', function(msg) {
+                console.log(msg.data);
+               // $('#log').append('<li class="list-group-item">Received #' + msg.count + ': ' + JSON.stringify(msg.data) + '</li>');
+            });
+
+        });
+    </script>
+{% endblock  %}
+{% include 'navbar.html' %}
+{% block content %}
+
+     <section id="database-panel" class="border rounded p-4 mb-4">
+            <h2>Database Panel</h2>
+            <form action="/db" method="GET">
+                <button type="submit" class="btn btn-primary mb-2">Get All</button>
+            </form>
+            <form id="record_id_form" action="/graphdb" method="GET">
+                <div class="form-group">
+                    <input type="number" name="db_record_id" id="db_record_id" class="form-control" placeholder="Enter Record ID">
+                </div>
+                <button type="submit" class="btn btn-primary">Get Record</button>
+            </form>
+        </section>
+
+        <section id="file-panel" class="border rounded p-4">
+            <h2>File Panel</h2>
+            <form action="/read" method="GET">
+                <button type="submit" class="btn btn-primary mb-2">Get All</button>
+            </form>
+            <form id="getByIdFileForm" action="/readfile" method="GET">
+                <div class="form-group">
+                    <input type="number" name="file_record_id" id="file_record_id" class="form-control" placeholder="Enter Record ID">
+                </div>
+                <button type="submit" class="btn btn-primary">Get By ID</button>
+            </form>
+        </section>
+
+{% endblock  %}

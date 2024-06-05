@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Graph
+{% endblock  %}
+
+{% block script %}
+  <script src="static/libs/plotly-latest.min.js"></script>
+  <script type="text/javascript" charset="utf-8">
+     $(document).ready(function() {    
+      var x = [];
+      var yGas = [];
+      var yLight = [];
+      var yTemperature = [];
+      var yRain = [];
+      var layout;
+  
+      
+      namespace = '/test';
+      var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+      socket.on('connect', function() {
+        socket.emit('my_event', {data: 'I\'m connected!', value: 1}); });
+
+      socket.on('my_response', function(msg) {
+        //console.log(msg.data);
+          var dataHtml = '';
+          dataHtml += 
+                    '<span class="text-dark">Count:</span> ' + (msg.data.Count || 'N/A') + ', ' +
+                    '<span class="text-primary">Gas:</span> ' + (msg.data.Gas || 'N/A') + ', ' +
+                    '<span class="text-success">Light:</span> ' + (msg.data.Light || 'N/A') + ', ' +
+                    '<span class="text-danger">Temperature:</span> ' + (msg.data.Temperature || 'N/A') + ', ' +
+                    '<span class="text-warning">Rain:</span> ' + (msg.data.Rain || 'N/A');
+        $('#log').append('<li class="list-group-item">' + dataHtml + '</li>');
+        
+        var data = msg.data;
+        
+        x.push(parseFloat(data.Count));
+        yGas.push(parseFloat(data.Gas));
+        yLight.push(parseFloat(data.Light));
+        yTemperature.push(parseFloat(data.Temperature));
+        yRain.push(parseFloat(data.Rain));
+        
+        var trace1 = {
+            x: x,
+            y: yGas,
+            name: 'Gas'
+        };      
+        var trace2 = {
+            x: x,
+            y: yLight,
+            name: 'Light'
+        };   
+        var trace3 = {
+            x: x,
+            y: yTemperature,
+            name: 'Temperature'
+        }; 
+        var trace4 = {
+            x: x,
+            y: yRain,
+            name: 'Rain'
+        }; 
+
+        var traces = [trace1, trace2, trace3, trace4];
+
+        layout = {
+          title: 'Sensor Monitoring',
+          xaxis: {
+              title: 'x',
+          },
+          yaxis: {
+              title: 'y',
+              //range: [-1,1]
+          }
+        };
+
+        Plotly.newPlot('plotdiv', traces, layout); 
+      });
+
+      $('form#emit').submit(function(event) {
+          socket.emit('my_event', {value: $('#emit_value').val()});
+          return false; 
+      });
+      
+      $('#buttonVal').click(function(event) {
+          socket.emit('click_event', {value: $('#buttonVal').val()});
+          return false; 
+      });
+
+      $('form#disconnect').submit(function(event) {
+          socket.emit('disconnect_request');
+          return false; 
+      });         
+    });
+  </script>
+{% endblock  %}
+
+{% include 'navbar.html' %}
+
+{% block content %}
+ <form id="disconnect" method="POST" action="#" class="mb-3">
+      <button type="submit" class="btn btn-danger">Disconnect</button>
+    </form> 
+ <div id="plotdiv" class="mb-4 text-center mx-auto" style="width:700px;height:350px;"></div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <h2 class="text-center">Values from Sensors</h2>
+            <ul id="log" class="list-group"></ul>
+        </div>
+    </div>
+{% endblock  %}

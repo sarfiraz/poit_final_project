@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}
+  List 
+{% endblock  %}
+
+{% block script %}
+ <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            namespace = '/test';
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            socket.on('connect', function() {
+                socket.emit('my_event', {data: 'I\'m connected!', value: 1});
+            });
+
+            socket.on('my_response', function(msg) {
+                console.log(msg.data);
+            var dataHtml = '';
+
+            if (msg.data !="Disconnected!" ) {
+                dataHtml += 
+                    '<span class="text-primary">Gas:</span> ' + (msg.data.Gas || 'N/A') + ', ' +
+                    '<span class="text-success">Light:</span> ' + (msg.data.Light || 'N/A') + ', ' +
+                    '<span class="text-danger">Temperature:</span> ' + (msg.data.Temperature || 'N/A') + ', ' +
+                    '<span class="text-warning">Rain:</span> ' + (msg.data.Rain || 'N/A');
+            } else {
+                dataHtml =  '<span class="text-danger">Client Disconnected!</span> ' ;
+            }
+
+            $('#log').append('<li class="list-group-item">' + dataHtml + '</li>');
+            });
+            
+            $('form#disconnect').submit(function(event) {
+                socket.emit('disconnect_request');
+                return false;
+            });
+            //$('.buttonVal').click(function(event) {
+              //console.log("button value: ", event.target.value);
+              //socket.emit('click_event', {value: event.target.value});
+              //return false; 
+            //});
+            
+            $('#buttonVal').click(function(event) {
+          //console.log($('#buttonVal').val());
+              socket.emit('db_event', {value: $('#buttonVal').val()});
+              if ($(this).val() == "start") {
+                $(this).val("stop");
+                $(this).text("Stop");
+              }
+              else {
+                $(this).val("start");
+                $(this).text("Start");
+              }
+          return false; }); 
+
+  
+
+        });
+    </script>
+{% endblock  %}
+{% include 'navbar.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center">
+<!--
+                    <button id="buttonValStart" class="buttonVal btn btn-success mr-2" type="submit" value="true">Start</button>
+                    <button id="buttonValStop" class="buttonVal btn btn-primary" type="submit" value="false">Stop</button>
+-->
+                    <button id="buttonVal" class="btn btn-primary mr-2" type="submit" value="start">Start</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-center">
+                <form id="disconnect" method="POST" action="#" class="mr-3">
+                    <button type="submit" class="btn btn-warning ">Disconnect</button>
+                </form>
+                <form id="closeForm" method="POST" action="/close" class="text-center">
+                    <button type="submit" class="btn btn-danger">Close Server</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col">
+            <h2 class="text-center">Values from Sensors</h2>
+            <ul id="log" class="list-group"></ul>
+        </div>
+    </div>
+</div>
+
+{% endblock  %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Show All
+{% endblock  %}
+
+{% block script %}
+{% endblock  %}
+
+{% include 'navbar.html' %}
+
+{% block content %}
+        <h1 class="mt-4">All Data from database</h1>
+        <div id="data" class="mt-4">
+            {% for json_string in data %}
+                <div class="row border rounded p-3 mb-3">
+                    <div class="col-2">
+                        <h4>Row {{ loop.index }}</h4>
+                    </div>
+                    <div class="col-10">
+                        <pre>{{ json_string }}</pre>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{% endblock  %}

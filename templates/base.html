@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+    {% block title %}
+    {# Template title inserted here#}
+    {% endblock %}
+    </title>
+   <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/style.css')}}">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.min.js"></script>
+	{% block script %}
+    {# Template script inserted here#}
+    {% endblock %}
+
+</head>
+<body>
+	
+<div class="container mt-2">
+    <h1 class="heading">Sensor Monitoring Web App</h1> 
+    {% block content %}
+    {# Template Content inserted here#}
+    {% endblock %}
+</div>
+
+</body>
+</html>
